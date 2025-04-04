@@ -2,3 +2,5 @@ edk2/
 osbook/
 mnt/
 disk.img
+kernel.elf
+main.o
