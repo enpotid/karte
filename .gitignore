@@ -2,5 +2,3 @@ edk2/
 devenv/
 mnt/
 disk.img
-kernel.elf
-main.o
