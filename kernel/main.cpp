@@ -287,12 +287,6 @@ extern "C" void KernelMainNewStack(
       160, 52, frame_buffer_config.pixel_format);
   DrawWindow(*main_window->Writer(), "Hello Window");
 
-  auto hello_window = std::make_shared<Window>(
-      160, 72, frame_buffer_config.pixel_format);
-  DrawWindow(*hello_window->Writer(), "KarteOS");
-  WriteString(*hello_window->Writer(), {24, 28}, "Hello!", {0, 0, 0});
-  WriteString(*hello_window->Writer(), {24, 44}, "Made by enpotid", {0, 0, 0});
-
   auto console_window = std::make_shared<Window>(
       Console::kColumns * 8, Console::kRows * 16, frame_buffer_config.pixel_format);
   console->SetWindow(console_window);
@@ -319,11 +313,6 @@ extern "C" void KernelMainNewStack(
     .SetDraggable(true)
     .Move({300, 100})
     .ID();
-  auto hello_window_layer_id = layer_manager->NewLayer()
-    .SetWindow(hello_window)
-    .SetDraggable(true)
-    .Move({200, 200})
-    .ID();
 
   console->SetLayerID(layer_manager->NewLayer()
     .SetWindow(console_window)
@@ -333,8 +322,7 @@ extern "C" void KernelMainNewStack(
   layer_manager->UpDown(bglayer_id, 0);
   layer_manager->UpDown(console->LayerID(), 1);
   layer_manager->UpDown(main_window_layer_id, 2);
-  layer_manager->UpDown(hello_window_layer_id, 3);
-  layer_manager->UpDown(mouse_layer_id, 4);
+  layer_manager->UpDown(mouse_layer_id, 3);
   layer_manager->Draw({{0, 0}, screen_size});
 
   char str[128];
