@@ -1,3 +1,9 @@
+/**
+ * @file main.cpp
+ *
+ * カーネル本体のプログラムを書いたファイル．
+ */
+
 #include <cstdint>
 #include <cstddef>
 #include <cstdio>
@@ -24,6 +30,7 @@
 #include "window.hpp"
 #include "layer.hpp"
 #include "message.hpp"
+#include "timer.hpp"
 
 int printk(const char* format, ...) {
   va_list ap;
@@ -83,6 +90,10 @@ extern "C" void KernelMainNewStack(
   InitializeMouse();
   layer_manager->Draw({{0, 0}, ScreenSize()});
 
+  // #@@range_begin(call_init_timer)
+  InitializeLAPICTimer();
+  // #@@range_end(call_init_timer)
+
   char str[128];
   unsigned int count = 0;
 
@@ -103,10 +114,15 @@ extern "C" void KernelMainNewStack(
     main_queue->pop_front();
     __asm__("sti");
 
+    // #@@range_begin(process_event)
     switch (msg.type) {
     case Message::kInterruptXHCI:
       usb::xhci::ProcessEvents();
       break;
+    case Message::kInterruptLAPICTimer:
+      printk("Timer interrupt\n");
+      break;
+    // #@@range_end(process_event)
     default:
       Log(kError, "Unknown message type: %d\n", msg.type);
     }
